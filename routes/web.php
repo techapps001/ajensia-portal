@@ -76,7 +76,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //dashbord
     Route::get('/dashboard', [HomeController::class, 'Dashboard'])->name('dashboard');
     Route::get('/home', [HomeController::class, 'Dashboard'])->name('home');
+    Route::get('/chat-message', [HomeController::class, 'chatMessage'])->name('chatMessage');
 
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('chat-message','chatMessage')->name('chatMessage');
+    });
+
+    Route::prefix('dashboard')->group(function () {
+        Route::controller(HomeController::class)->group(function () {
+            Route::get('ai', 'getaiDashboard')->name('aiDashboard');
+            Route::get('crm', 'getcrmDashboard')->name('crmDashboard');
+            });
+    });
 
     // settings
     Route::resource('settings', SettingsController::class);

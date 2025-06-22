@@ -25,98 +25,75 @@ if (!function_exists('getMenu')) {
     function getMenu()
     {
         $user = auth()->user();
-        return Cache::rememberForever(
-            'sidebar_menu_' . $user->id,
-            function () use ($user) {
-                $role = $user->roles->first();
-                $menu = new \App\Classes\Menu($user);
+        $role = $user->roles->first();
+        $menu = new \App\Classes\Menu($user);
 
+        if ($role->name === 'super admin') {
+            event(new \App\Events\SuperAdminMenuEvent($menu));
+        } else {
+            event(new \App\Events\CompanyMenuEvent($menu));
+        }
 
-                if ($role->name == 'super admin') {
-                    event(new \App\Events\SuperAdminMenuEvent($menu));
-                } else {
-                    event(new \App\Events\CompanyMenuEvent($menu));
+        $collection = collect($menu->menu);
+        $grouped = $collection->groupBy('category');
+
+        $categoryIcon = categoryIcon(); // assumed to be ['General' => 'icon-name', ...]
+        $sidebarMenu = [];
+
+        foreach ($grouped as $category => $items) {
+            // Build indexed array of items by 'name' to allow child assignment
+            $indexed = [];
+            foreach ($items as $item) {
+                $item['children'] = [];
+                $indexed[$item['name']] = $item;
+            }
+
+            // Nest children
+            foreach ($indexed as $name => &$item) {
+                if (!empty($item['parent']) && isset($indexed[$item['parent']])) {
+                    $indexed[$item['parent']]['children'][] = &$item;
                 }
-                $collection = collect($menu->menu);
-                $grouped = $collection->groupBy('category')->toArray();
-
-                $categoryIcon = categoryIcon();
-
-                uksort($grouped, function ($a, $b) use ($categoryIcon) {
-                    $indexA = array_search($a, array_keys($categoryIcon));
-                    $indexB = array_search($b, array_keys($categoryIcon));
-                    return $indexA <=> $indexB;
-                });
-                return generateMenu($grouped, null);
             }
-        );
-    }
-}
+            unset($item); // Break reference
 
-if (!function_exists('generateMenu')) {
-    function generateMenu($grouped, $parent = null)
-    {
-        $html = '';
+            // Only take top-level items (parent == null)
+            $topLevel = array_filter($indexed, fn($item) => is_null($item['parent']));
 
-        foreach ($grouped as $category => $menuItems) {
-            $company_settings = getCompanyAllSetting();
-            if (!empty($company_settings['category_wise_sidemenu']) && $company_settings['category_wise_sidemenu'] == 'on') {
-                $icon = isset(categoryIcon()[$category]) ? categoryIcon()[$category] : 'home';
-                $html .= '<li class="dash-item dash-caption">
-                        <label>' . $category . '</label>
-                        <i class="ti ti-' . $icon . '"></i>
-                      </li>';
+            // Format for sidebar
+            $formattedChildren = [];
+            foreach ($topLevel as $item) {
+                $formattedChildren[] = formatMenuItem($item);
             }
 
-            $html .= generateSubMenu($menuItems, $parent);
+            $sidebarMenu[] = [
+                'title' => $category,
+                'icon' => $categoryIcon[$category] ?? '',
+                'children' => $formattedChildren,
+            ];
         }
 
-        return $html;
-    }
-}
+        // Optional: sort the categories by the order in $categoryIcon
+        usort($sidebarMenu, function ($a, $b) use ($categoryIcon) {
+            $keys = array_keys($categoryIcon);
+            return array_search($a['title'], $keys) <=> array_search($b['title'], $keys);
+        });
 
-if (!function_exists('generateSubMenu')) {
-    function generateSubMenu($menuItems, $parent = null)
+        return $sidebarMenu;
+    }
+
+    function formatMenuItem($item)
     {
-        $html = '';
-
-        $filteredItems = array_filter($menuItems, function ($item) use ($parent) {
-            return $item['parent'] == $parent;
-        });
-
-        usort($filteredItems, function ($a, $b) {
-            return $a['order'] - $b['order'];
-        });
-
-        foreach ($filteredItems as $item) {
-            $hasChildren = hasChildren($menuItems, $item['name']);
-            if ($item['parent'] == null) {
-                $html .= '<li class="dash-item dash-hasmenu">';
-            } else {
-                $html .= '<li class="dash-item">';
-            }
-            $html .= '<a href="' . (!empty($item['route']) ? route($item['route']) : '#!') . '" class="dash-link">';
-
-            if ($item['parent'] == null) {
-                $html .= ' <span class="dash-micon"><i class="ti ti-' . $item['icon'] . '"></i></span>
-                <span class="dash-mtext">';
-            }
-            $html .= __($item['title']) . '</span>';
-
-            if ($hasChildren) {
-                $html .= '<span class="dash-arrow"> <i data-feather="chevron-right"></i> </span> </a>';
-                $html .= '<ul class="dash-submenu">';
-                $html .= generateSubMenu($menuItems, $item['name']);
-                $html .= '</ul>';
-            } else {
-                $html .= '</a>';
-            }
-
-            $html .= '</li>';
-        }
-        return $html;
+        $children = array_map('formatMenuItem', $item['children']);
+        return [
+            'title' => $item['title'],
+            'route' => $item['route'],
+            'icon' => $item['icon'] ?? '',
+            'children' => $children,
+        ];
     }
+
 }
+
 
 if (!function_exists('categoryIcon')) {
     function categoryIcon()
@@ -1414,17 +1391,17 @@ if (!function_exists('sidebar_logo')) {
                     if (check_file($company_settings['logo_light'])) {
                         return $company_settings['logo_light'];
                     } else {
-                        return 'uploads/logo/logo_light.png';
+                        return 'assets/images/logo-light.png';
                     }
                 } else {
                     if (!empty($admin_settings['logo_light'])) {
                         if (check_file($admin_settings['logo_light'])) {
                             return $admin_settings['logo_light'];
                         } else {
-                            return 'uploads/logo/logo_light.png';
+                            return 'assets/images/logo-light.png';
                         }
                     } else {
-                        return 'uploads/logo/logo_light.png';
+                        return 'assets/images/logo-light.png';
                     }
                 }
             } else {
@@ -1432,17 +1409,17 @@ if (!function_exists('sidebar_logo')) {
                     if (check_file($company_settings['logo_dark'])) {
                         return $company_settings['logo_dark'];
                     } else {
-                        return 'uploads/logo/logo_dark.png';
+                        return 'assets/images/logo-dark.png';
                     }
                 } else {
                     if (!empty($admin_settings['logo_dark'])) {
                         if (check_file($admin_settings['logo_dark'])) {
                             return $admin_settings['logo_dark'];
                         } else {
-                            return 'uploads/logo/logo_dark.png';
+                            return 'assets/images/logo-dark.png';
                         }
                     } else {
-                        return 'uploads/logo/logo_dark.png';
+                        return 'assets/images/logo-dark.png';
                     }
                 }
             }
@@ -1452,20 +1429,20 @@ if (!function_exists('sidebar_logo')) {
                     if (check_file($admin_settings['logo_light'])) {
                         return $admin_settings['logo_light'];
                     } else {
-                        return 'uploads/logo/logo_light.png';
+                        return 'assets/images/logo-light.png';
                     }
                 } else {
-                    return 'uploads/logo/logo_light.png';
+                    return 'assets/images/logo-light.png';
                 }
             } else {
                 if (!empty($admin_settings['logo_dark'])) {
                     if (check_file($admin_settings['logo_dark'])) {
                         return $admin_settings['logo_dark'];
                     } else {
-                        return 'uploads/logo/logo_dark.png';
+                        return 'assets/images/logo-dark.png';
                     }
                 } else {
-                    return 'uploads/logo/logo_dark.png';
+                    return 'assets/images/logo-dark.png';
                 }
             }
         }
@@ -1477,15 +1454,15 @@ if (!function_exists('light_logo')) {
     {
         if (\Auth::check()) {
             $company_settings = getCompanyAllSetting();
-            $logo_light = isset($company_settings['logo_light']) ? $company_settings['logo_light'] : 'uploads/logo/logo_light.png';
+            $logo_light = isset($company_settings['logo_light']) ? $company_settings['logo_light'] : 'uploads/logo/logo-light.png';
         } else {
             $admin_settings = getAdminAllSetting();
-            $logo_light = isset($admin_settings['logo_light']) ? $admin_settings['logo_light'] : 'uploads/logo/logo_light.png';
+            $logo_light = isset($admin_settings['logo_light']) ? $admin_settings['logo_light'] : 'uploads/logo/logo-light.png';
         }
         if (check_file($logo_light)) {
             return $logo_light;
         } else {
-            return 'uploads/logo/logo_dark.png';
+            return 'uploads/logo/logo-dark.png';
         }
     }
 }
@@ -1495,15 +1472,15 @@ if (!function_exists('dark_logo')) {
     {
         if (\Auth::check()) {
             $company_settings = getCompanyAllSetting();
-            $logo_dark = isset($company_settings['logo_dark']) ? $company_settings['logo_dark'] : 'uploads/logo/logo_dark.png';
+            $logo_dark = isset($company_settings['logo_dark']) ? $company_settings['logo_dark'] : 'uploads/logo/logo-dark.png';
         } else {
             $admin_settings = getAdminAllSetting();
-            $logo_dark = isset($admin_settings['logo_dark']) ? $admin_settings['logo_dark'] : 'uploads/logo/logo_dark.png';
+            $logo_dark = isset($admin_settings['logo_dark']) ? $admin_settings['logo_dark'] : 'uploads/logo/logo-dark.png';
         }
         if (check_file($logo_dark)) {
             return $logo_dark;
         } else {
-            return 'uploads/logo/logo_dark.png';
+            return 'uploads/logo/logo-dark.png';
         }
     }
 }

@@ -119,7 +119,7 @@ class HomeController extends Controller
 
                 $user['popular_plan'] = $popular_plan;
 
-                return view('dashboard.dashboard', compact('user', 'chartData'));
+                return view('dashboard.crm', compact('user', 'chartData'));
             }
             else
             {
@@ -139,13 +139,26 @@ class HomeController extends Controller
                         return redirect()->route($route);
                     }
                 }
-                return view('dashboard');
+                return view('dashboard.crm');
             }
         }
         else
         {
             return redirect()->route('start');
         }
+    }
+
+    public function getaiDashboard() {
+        return view('dashboard.ai');
+    }
+
+    public function getcrmDashboard() {
+        return view('dashboard.crm');
+    }
+
+    public function chatMessage()
+    {
+        return view('chatMessage');
     }
 
     public function getOrderChart($arrParam)

@@ -32,100 +32,51 @@
                     <button data-dropdown-toggle="dropdownInformation" class="has-indicator w-10 h-10 bg-neutral-200 dark:bg-neutral-700 dark:text-white rounded-full flex justify-center items-center" type="button">
                         <img src="{{ asset('assets/images/lang-flag.png') }}" alt="image" class="w-6 h-6 object-cover rounded-full">
                     </button>
+
                     <div id="dropdownInformation" class="z-10 hidden bg-white dark:bg-neutral-700 rounded-lg shadow-lg dropdown-menu-sm p-3">
                         <div class="py-3 px-4 rounded-lg bg-primary-50 dark:bg-primary-600/25 mb-4 flex items-center justify-between gap-2">
                             <div>
-                                <h6 class="text-lg text-neutral-900 font-semibold mb-0">Choose Your Language</h6>
+                                <h6 class="text-lg text-neutral-900 font-semibold mb-0">{{ __('Choose Your Language') }}</h6>
                             </div>
                         </div>
 
                         <div class="max-h-[400px] overflow-y-auto scroll-sm pe-2">
                             <div class="mt-4 flex flex-col gap-4">
-
-                                <div class="form-check style-check flex items-center justify-between">
-                                    <label class="form-check-label line-height-1 font-medium text-secondary-light" for="english">
-                                        <span class="text-black hover-bXg-transparent hover-text-primary flex items-center gap-3">
-                                            <img src="{{ asset('assets/images/flags/flag1.png') }}" alt="" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
-                                            <span class="text-base font-semibold mb-0">English</span>
-                                        </span>
-                                    </label>
-                                    <input class="form-check-input rounded-full" name="language" type="radio" id="english">
-                                </div>
-
-                                <div class="form-check style-check flex items-center justify-between">
-                                    <label class="form-check-label line-height-1 font-medium text-secondary-light" for="Japan">
-                                        <span class="text-black hover-bXg-transparent hover-text-primary flex items-center gap-3">
-                                            <img src="{{ asset('assets/images/flags/flag2.png') }}" alt="" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
-                                            <span class="text-base font-semibold mb-0">Japan</span>
-                                        </span>
-                                    </label>
-                                    <input class="form-check-input rounded-full" name="language" type="radio" id="Japan">
-                                </div>
-
-                                <div class="form-check style-check flex items-center justify-between">
-                                    <label class="form-check-label line-height-1 font-medium text-secondary-light" for="Franch">
-                                        <span class="text-black hover-bXg-transparent hover-text-primary flex items-center gap-3">
-                                            <img src="{{ asset('assets/images/flags/flag3.png') }}" alt="" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
-                                            <span class="text-base font-semibold mb-0">Franch</span>
-                                        </span>
-                                    </label>
-                                    <input class="form-check-input rounded-full" name="language" type="radio" id="Franch">
-                                </div>
-
-                                <div class="form-check style-check flex items-center justify-between">
-                                    <label class="form-check-label line-height-1 font-medium text-secondary-light" for="Germany">
-                                        <span class="text-black hover-bXg-transparent hover-text-primary flex items-center gap-3">
-                                            <img src="{{ asset('assets/images/flags/flag4.png') }}" alt="" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
-                                            <span class="text-base font-semibold mb-0">Germany</span>
-                                        </span>
-                                    </label>
-                                    <input class="form-check-input rounded-full" name="language" type="radio" id="Germany">
-                                </div>
-
-                                <div class="form-check style-check flex items-center justify-between">
-                                    <label class="form-check-label line-height-1 font-medium text-secondary-light" for="SouthKoria">
-                                        <span class="text-black hover-bXg-transparent hover-text-primary flex items-center gap-3">
-                                            <img src="{{ asset('assets/images/flags/flag5.png') }}" alt="" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
-                                            <span class="text-base font-semibold mb-0">South Koria</span>
-                                        </span>
-                                    </label>
-                                    <input class="form-check-input rounded-full" name="language" type="radio" id="SouthKoria">
-                                </div>
-
-                                <div class="form-check style-check flex items-center justify-between">
-                                    <label class="form-check-label line-height-1 font-medium text-secondary-light" for="Bangladesh">
-                                        <span class="text-black hover-bXg-transparent hover-text-primary flex items-center gap-3">
-                                            <img src="{{ asset('assets/images/flags/flag6.png') }}" alt="" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
-                                            <span class="text-base font-semibold mb-0">Bangladesh</span>
-                                        </span>
-                                    </label>
-                                    <input class="form-check-input rounded-full" name="language" type="radio" id="Bangladesh">
-                                </div>
-
-                                <div class="form-check style-check flex items-center justify-between">
-                                    <label class="form-check-label line-height-1 font-medium text-secondary-light" for="India">
-                                        <span class="text-black hover-bXg-transparent hover-text-primary flex items-center gap-3">
-                                            <img src="{{ asset('assets/images/flags/flag7.png') }}" alt="" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
-                                            <span class="text-base font-semibold mb-0">India</span>
-                                        </span>
-                                    </label>
-                                    <input class="form-check-input rounded-full" name="language" type="radio" id="India">
-                                </div>
-
-                                <div class="form-check style-check flex items-center justify-between">
-                                    <label class="form-check-label line-height-1 font-medium text-secondary-light" for="Koria">
-                                        <span class="text-black hover-bXg-transparent hover-text-primary flex items-center gap-3">
-                                            <img src="{{ asset('assets/images/flags/flag8.png') }}" alt="" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
-                                            <span class="text-base font-semibold mb-0">Koria</span>
-                                        </span>
-                                    </label>
-                                    <input class="form-check-input rounded-full" name="language" type="radio" id="Koria">
-                                </div>
-
+                                @foreach (languages() as $key => $language)
+                                    <div class="form-check style-check flex items-center justify-between">
+                                        <label class="form-check-label line-height-1 font-medium text-secondary-light" for="lang-{{ $key }}">
+                                            <span class="text-black hover-bg-transparent hover-text-primary flex items-center gap-3">
+                                                {{-- Optional: Use dynamic flag logic or match static flags --}}
+                                                <img src="{{ asset('assets/images/flags/' . $key . '.png') }}" onerror="this.src='{{ asset('assets/images/lang-flag.png') }}'" alt="{{ $language }}" class="w-9 h-9 bg-success-subtle text-success-600 rounded-full shrink-0">
+                                                <span class="text-base font-semibold mb-0">{{ Str::ucfirst($language) }}</span>
+                                            </span>
+                                        </label>
+                                        <input class="form-check-input rounded-full" name="language" type="radio" id="lang-{{ $key }}" value="{{ $key }}" onchange="window.location.href='{{ route('lang.change', $key) }}'" @if($key == getActiveLanguage()) checked @endif>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
+
+                        @if (Auth::user()->type == 'super admin')
+                            <div class="border-t pt-3 mt-4">
+                                @permission('language create')
+                                    <a href="#" data-url="{{ route('create.language') }}"
+                                        class="text-primary text-sm font-medium inline-block mb-2" data-ajax-popup="true"
+                                        data-title="{{ __('Create New Language') }}">
+                                        {{ __('Create Language') }}
+                                    </a><br>
+                                @endpermission
+                                @permission('language manage')
+                                    <a href="{{ route('lang.index', [Auth::user()->lang]) }}"
+                                        class="text-primary text-sm font-medium inline-block">
+                                        {{ __('Manage Languages') }}
+                                    </a>
+                                @endpermission
+                            </div>
+                        @endif
                     </div>
                 </div>
+
                 <!-- Language Dropdown End  -->
                 <!-- Message Dropdown Start  -->
                 <button data-dropdown-toggle="dropdownMessage" class="has-indicator w-10 h-10 bg-neutral-200 dark:bg-neutral-700 rounded-full flex justify-center items-center" type="button">
@@ -323,8 +274,7 @@
                 <div id="dropdownProfile" class="z-10 hidden bg-white dark:bg-neutral-700 rounded-lg shadow-lg dropdown-menu-sm p-3">
                     <div class="py-3 px-4 rounded-lg bg-primary-50 dark:bg-primary-600/25 mb-4 flex items-center justify-between gap-2">
                         <div>
-                            <h6 class="text-lg text-neutral-900 font-semibold mb-0">Shahidul Islam</h6>
-                            <span class="text-neutral-500">Admin</span>
+                            <h6 class="text-lg text-neutral-900 font-semibold mb-0">{{ Auth::user()->name }}</h6>
                         </div>
                         <button type="button" class="hover:text-danger-600">
                             <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
@@ -334,25 +284,22 @@
                     <div class="max-h-[400px] overflow-y-auto scroll-sm pe-2">
                         <ul class="flex flex-col">
                             <li>
-                                <a class="text-black px-0 py-2 hover:text-primary-600 flex items-center gap-4" href="{{ route('viewProfile') }}">
+                                @permission('user profile manage')
+                                <a class="text-black px-0 py-2 hover:text-primary-600 flex items-center gap-4" href="{{ route('profile') }}">
                                     <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon>  My Profile
                                 </a>
+                                @endpermission
                             </li>
                             <li>
-                                <a class="text-black px-0 py-2 hover:text-primary-600 flex items-center gap-4" href="{{ route('email') }}">
-                                    <iconify-icon icon="tabler:message-check" class="icon text-xl"></iconify-icon>  Inbox
+                                <a class="text-black px-0 py-2 hover:text-danger-600 flex items-center gap-4"  href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
+                                     <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon> {{ __('Logout') }}
                                 </a>
+                                <form id="frm-logout" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    {{ csrf_field() }}
+                                </form>
                             </li>
-                            <li>
-                                <a class="text-black px-0 py-2 hover:text-primary-600 flex items-center gap-4" href="{{ route('company') }}">
-                                    <iconify-icon icon="icon-park-outline:setting-two" class="icon text-xl"></iconify-icon>  Setting
-                                </a>
-                            </li>
-                            <li>
-                                <a class="text-black px-0 py-2 hover:text-danger-600 flex items-center gap-4" href="javascript:void(0)">
-                                    <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon>  Log Out
-                                </a>
-                            </li>
+
                         </ul>
                     </div>
                 </div>
