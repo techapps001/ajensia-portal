@@ -1,92 +1,55 @@
 @extends('layouts.auth')
-@section('page-title')
-    {{ __('Login') }}
-@endsection
-@section('language-bar')
-    <div class="lang-dropdown-only-desk">
-        <li class="dropdown dash-h-item drp-language">
-            <a class="dash-head-link dropdown-toggle btn" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="drp-text"> {{ Str::upper($lang) }}
-                </span>
-            </a>
-            <div class="dropdown-menu dash-h-dropdown dropdown-menu-end">
-                @foreach (languages() as $key => $language)
-                    <a href="{{ route('login', $key) }}"
-                        class="dropdown-item @if ($lang == $key) text-primary @endif">
-                        <span>{{ Str::ucfirst($language) }}</span>
-                    </a>
-                @endforeach
-            </div>
-        </li>
-    </div>
-@endsection
-@php
-    $admin_settings = getAdminAllSetting();
-@endphp
 
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="">
-                <h2 class="mb-3 f-w-600">{{ __('Login') }}</h2>
-            </div>
-            <form method="POST" action="{{ route('login') }}" class="needs-validation" novalidate="" id="form_data">
-                @csrf
-                <div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">{{ __('Email') }}</label>
-                        <input id="email" type="email" class="form-control  @error('email') is-invalid @enderror"
-                            name="email" value="{{ old('email') }}" placeholder="{{ __('E-Mail Address') }}" required
-                            autofocus>
-                        @error('email')
-                            <span class="error invalid-email text-danger" role="alert">
-                                <small>{{ $message }}</small>
-                            </span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">{{ __('Password') }}</label>
-                        <input id="password" type="password" class="form-control  @error('password') is-invalid @enderror"
-                            name="password" placeholder="{{ __('Password') }}" required>
-                        @error('password')
-                            <span class="error invalid-password text-danger" role="alert">
-                                <small>{{ $message }}</small>
-                            </span>
-                        @enderror
-                        @if (Route::has('password.request'))
-                            <div class="mt-2">
-                                <a href="{{ route('password.request', $lang) }}"
-                                    class="small text-primary text-underline--dashed border-primar">{{ __('Forgot Your Password?') }}</a>
-                            </div>
-                        @endif
-                    </div>
-                    @stack('recaptcha_field')
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-block mt-2 login_button"
-                            tabindex="4">{{ __('Login') }}</button>
-
-                        @stack('SigninButton')
-                    </div>
-                    @if (empty($admin_settings['signup']) || (isset($admin_settings['signup']) ? $admin_settings['signup'] : 'off') == 'on')
-                        <p class="my-3 text-center">{{ __("Don't have an account?") }}
-                            <a href="{{ route('register', $lang) }}" class="my-4 text-primary">{{ __('Register') }}</a>
-                        </p>
-                    @endif
-                </div>
-            </form>
-        </div>
+    <div>
+        <x-logo />
+        <h4 class="mb-3">Sign In to your Account</h4>
+        <p class="mb-8 text-secondary-light text-lg">Welcome back! please enter your detail</p>
     </div>
+
+    <form method="POST" action="{{ route('login') }}" id="form_data" class="needs-validation" novalidate>
+        @csrf
+
+        <x-input-m type="email" name="email" icon="mage:email" placeholder="Email" :required="true" :autofocus="true" />
+
+        <x-input-password name="password" placeholder="Password" />
+
+        <div class="mt-7 flex justify-between gap-2">
+            <div class="flex items-center">
+                <input class="form-check-input border border-neutral-300" type="checkbox" name="remember" id="remember">
+                <label class="ps-2" for="remember">Remember me</label>
+            </div>
+            <a href="{{ route('password.request', app()->getLocale()) }}" class="text-primary-600 font-medium hover:underline">Forgot Password?</a>
+        </div>
+
+        <x-button class="login_button mt-8">Sign In</x-button>
+
+        <div class="mt-8 center-border-horizontal text-center relative before:absolute before:w-full before:h-[1px] before:top-1/2 before:-translate-y-1/2 before:bg-neutral-300 before:start-0">
+            <span class="bg-white dark:bg-dark-2 z-[2] relative px-4">Or sign in with</span>
+        </div>
+
+        <div class="mt-8 flex items-center gap-3">
+            <x-social-button icon="ic:baseline-facebook" label="Facebook" />
+            <x-social-button icon="logos:google-icon" label="Google" />
+        </div>
+
+        <div class="mt-8 text-center text-sm">
+            <p>Don't have an account?
+                <a href="{{ route('register', app()->getLocale()) }}" class="text-primary-600 font-semibold hover:underline">Sign Up</a>
+            </p>
+        </div>
+    </form>
 @endsection
+
 @push('script')
-    <script>
-        $(document).ready(function() {
-            $("#form_data").submit(function(e) {
-                $(".login_button").attr("disabled", true);
-                setInterval(() => {
-                    $(".login_button").attr("disabled", false);
-                }, 1500);
-            });
+<script>
+    $(document).ready(function () {
+        $("#form_data").submit(function (e) {
+            $(".login_button").attr("disabled", true);
+            setTimeout(() => {
+                $(".login_button").attr("disabled", false);
+            }, 1500);
         });
-    </script>
+    });
+</script>
 @endpush
