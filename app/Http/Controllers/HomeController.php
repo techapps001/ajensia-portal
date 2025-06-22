@@ -119,7 +119,7 @@ class HomeController extends Controller
 
                 $user['popular_plan'] = $popular_plan;
 
-                return view('dashboard.crm', compact('user', 'chartData'));
+                return view('dashboard.admin', compact('user', 'chartData'));
             }
             else
             {

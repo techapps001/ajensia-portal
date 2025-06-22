@@ -4,3 +4,4 @@
         <p class="mb-0">Made by <span class="text-primary-600">Pixcels Themes</span></p>
     </div>
 </footer>
+@stack('scripts')
